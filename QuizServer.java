@@ -92,7 +92,6 @@ public class QuizServer extends UnicastRemoteObject implements QuizService {
             message[0] = "That ID does not exist. Check your ID was typed in correctly and try again please.";
             return message;
         }
-
     }
 
     public String checkIfQuizIDExists(int ID) throws RemoteException {
