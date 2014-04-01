@@ -22,15 +22,14 @@ import java.util.Set;
  */
 public class QuizPlayerClient implements Serializable {
 
-    QuizService server;
+    QuizService serverQuiz;
     Remote service;
-
     boolean running = true;
 
     GetInput input = new GetInput();
 
     public QuizPlayerClient() throws NotBoundException, MalformedURLException, RemoteException {
-        server = new QuizServer();
+        serverQuiz = new QuizServer();
 //        clientQuiz = new QuizServer();
         Remote service = this.service = Naming.lookup("//127.0.0.1:1099/quiz");
 //        if (System.getSecurityManager() == null) {
@@ -42,7 +41,7 @@ public class QuizPlayerClient implements Serializable {
     public void launch() throws RemoteException {
 
         try {
-            server = (QuizService) service;
+            serverQuiz = (QuizService) service;
 
             keepLooping();
 
@@ -101,7 +100,7 @@ public class QuizPlayerClient implements Serializable {
 
     public void printOutQuizList() throws RemoteException {
         try {
-            Object[] quizArray = server.getCurrentQuizList();
+            Object[] quizArray = serverQuiz.getCurrentQuizList();
             for (Object a : quizArray) {
                 Quiz b = (Quiz) a;
                 System.out.println("Quiz Name: " + b.getQuizName() + ", Quiz ID: " + b.getQuizID());
@@ -113,7 +112,7 @@ public class QuizPlayerClient implements Serializable {
     }
 
     public int getScoreForPlayer() throws RemoteException {
-        return server.getScore();
+        return serverQuiz.getScore();
 
     }
     /**
@@ -123,14 +122,14 @@ public class QuizPlayerClient implements Serializable {
      */
     public void playSelectedQuiz(int selectedQuizID) throws RemoteException {
 
-        Map<Integer, ArrayList<String>> quizMap = server.getQuizMap();
+        Map<Integer, ArrayList<String>> quizMap = serverQuiz.getQuizMap();
         ArrayList<String> questions = quizMap.get(selectedQuizID);//??
         //System.out.println(questions.toString());
 
         for (String a : questions) {
             //System.out.println(a);
-            Map<Integer, String[]> thisSet = server.getQuestionsAndAnswers();
-            int score = server.getScore();
+            Map<Integer, String[]> thisSet = serverQuiz.getQuestionsAndAnswers();
+            int score = serverQuiz.getScore();
 
             if (thisSet.containsKey(selectedQuizID)) {
                 String[] QAs = thisSet.get(selectedQuizID);
