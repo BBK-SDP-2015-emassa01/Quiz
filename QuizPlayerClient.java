@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package QuizProject;
 
 import java.io.Serializable;
@@ -113,11 +112,10 @@ public class QuizPlayerClient implements Serializable {
         }
     }
 
-    public int getScoreForPlater() throws RemoteException {
+    public int getScoreForPlayer() throws RemoteException {
         return server.getScore();
 
     }
-
     /**
      *
      * @param selectedQuizID
@@ -130,7 +128,7 @@ public class QuizPlayerClient implements Serializable {
         System.out.println(questions.toString());
 
         for (String a : questions) {
-        System.out.println(a);
+            System.out.println(a);
             Map<Integer, String[]> thisSet = server.getQuestionsAndAnswers();
             int score = server.getScore();
 
@@ -153,11 +151,10 @@ public class QuizPlayerClient implements Serializable {
                     System.out.println("CORRECT! \n 1 POINT AWARDED!");
                 }
 
-            //the answer needs to be checked and accumulated if correct.
+                //the answer needs to be checked and accumulated if correct.
             } else {
                 System.out.println("Questions for this Quiz were not found.");
             }
         }
     }
 }
-
