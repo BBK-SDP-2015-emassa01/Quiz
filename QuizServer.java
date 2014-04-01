@@ -27,7 +27,7 @@ public class QuizServer extends UnicastRemoteObject implements QuizService {
 
     private Map<Integer, ArrayList<String>> quizMap = new HashMap<>();//map Quiz ID to List of Questions
 
-    private Map<Integer, String[]> questionAnswers = new HashMap<>(); //holds an array, where pos[0] is the Question and pos[1-4] are the answers.
+    private Map<String, String[]> questionAnswers = new HashMap<>(); //holds an array, where pos[0] is the Question and pos[1-4] are the answers.
 
     private int score = 0;
 
@@ -44,7 +44,7 @@ public class QuizServer extends UnicastRemoteObject implements QuizService {
         return this.quizMap;
     }
 
-    public Map<Integer, String[]> getQuestionsAndAnswers() throws RemoteException {
+    public Map<String, String[]> getQuestionsAndAnswers() throws RemoteException {
         return this.questionAnswers;
     }
 
@@ -119,22 +119,22 @@ public class QuizServer extends UnicastRemoteObject implements QuizService {
                 + ID + ".\n");
     }
 
-    public void serverAddsAnswers(int ID, String[] answers) throws RemoteException {
+    public void serverAddsAnswers(String question, String[] answers) throws RemoteException {
 //        if (quizMap.containsKey(ID)) {
 //            String[] temp = QuestionAnswers.get(ID);
 //            temp = answers;
 //
 //        } else {
-        questionAnswers.put(ID, answers);
-        System.out.println("Quiz: " + ID + " has been added/amended in the Question and Answers Map. ");
+        questionAnswers.put(question, answers);
+        System.out.println("Quiz: " + question + " has been added/amended in the Question and Answers Map. ");
         System.out.println("QA" + questionAnswers.toString());
 
     }
 
-    public void serverAddstoQuizMap(int ID, String[] answers) throws RemoteException {
+    public void serverAddstoQuizMap(String question, String[] answers) throws RemoteException {
 
-        questionAnswers.put(ID, answers);
-        System.out.println("Quiz: " + ID + " has been added/amended in the Question and Answers Map. ");
+        questionAnswers.put(question, answers);
+        System.out.println("Quiz: " + question + " has been added/amended in the Question and Answers Map. ");
         System.out.println("QA" + questionAnswers.toString());
     }
 

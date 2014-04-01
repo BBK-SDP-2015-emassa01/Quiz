@@ -115,6 +115,7 @@ public class QuizPlayerClient implements Serializable {
         return serverQuiz.getScore();
 
     }
+
     /**
      *
      * @param selectedQuizID
@@ -123,16 +124,17 @@ public class QuizPlayerClient implements Serializable {
     public void playSelectedQuiz(int selectedQuizID) throws RemoteException {
 
         Map<Integer, ArrayList<String>> quizMap = serverQuiz.getQuizMap();
-        ArrayList<String> questions = quizMap.get(selectedQuizID);//??
-        //System.out.println(questions.toString());
+        ArrayList<String> questions = quizMap.get(selectedQuizID);
+        int score = serverQuiz.getScore();
 
-        for (String a : questions) {
-            //System.out.println(a);
-            Map<Integer, String[]> thisSet = serverQuiz.getQuestionsAndAnswers();
-            int score = serverQuiz.getScore();
+        for (int i = 0; i < questions.size(); i++) {
+            System.out.println(questions.get(i));
 
-            if (thisSet.containsKey(selectedQuizID)) {
-                String[] QAs = thisSet.get(selectedQuizID);
+            Map<String, String[]> thisSet = serverQuiz.getQuestionsAndAnswers();
+            System.out.println(thisSet.toString());
+            //if (thisSet.containsKey(questions.get(i))) {
+            try {
+                String[] QAs = thisSet.get(questions.get(i));
 
                 System.out.println("Question: " + QAs[0] + "\n");
 
@@ -150,11 +152,13 @@ public class QuizPlayerClient implements Serializable {
                     System.out.println("CORRECT! \n 1 POINT AWARDED!");
                 } else {
                     System.out.println("WRONG!");
-                }
+                //}
 
-                //the answer needs to be checked and accumulated if correct.
-            } else {
+                    //the answer needs to be checked and accumulated if correct.
+                }
+            } catch (Exception e) {
                 System.out.println("Questions for this Quiz were not found.");
+                e.printStackTrace();
             }
         }
     }

@@ -102,7 +102,7 @@ public class QuizSetupClient {
             question = input.getStringInput();
 
             if (question.equals("end")) {
-                serverQuiz.serverAddsAnswers(id, answers);
+//                serverQuiz.serverAddsAnswers(question, answers);
                 serverQuiz.serverAddsSetOfQuestions(id, newListOfQuestions);
                 collectingQ = false;
                 System.out.println("Set-Up Client completed entering Questions.");
@@ -110,7 +110,8 @@ public class QuizSetupClient {
                 newListOfQuestions.add(question);
                 System.out.println("Set-Up Client added a Question");
                 answers = clientAddsAnswers(question);
-                serverQuiz.getQuestionsAndAnswers().put(id, answers);
+                serverQuiz.serverAddsAnswers(question, answers);
+                serverQuiz.getQuestionsAndAnswers().put(question, answers);
 
             }
 //            if (!question.equals("end")) {

@@ -27,13 +27,13 @@ public interface QuizService extends Remote {
 
     public String checkIfQuizIDExists(int ID) throws RemoteException;
 
-    public void serverAddsAnswers(int ID, String[] answers) throws RemoteException;
+    public void serverAddsAnswers(String question, String[] answers) throws RemoteException;
 
     public Set<Quiz> getQuizzes() throws RemoteException;
 
     public Map<Integer, ArrayList<String>> getQuizMap() throws RemoteException;
 
-    public Map<Integer, String[]> getQuestionsAndAnswers() throws RemoteException;
+    public Map<String, String[]> getQuestionsAndAnswers() throws RemoteException;
 
     public int getScore() throws RemoteException;
 }
