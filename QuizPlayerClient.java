@@ -125,10 +125,10 @@ public class QuizPlayerClient implements Serializable {
 
         Map<Integer, ArrayList<String>> quizMap = server.getQuizMap();
         ArrayList<String> questions = quizMap.get(selectedQuizID);//??
-        System.out.println(questions.toString());
+        //System.out.println(questions.toString());
 
         for (String a : questions) {
-            System.out.println(a);
+            //System.out.println(a);
             Map<Integer, String[]> thisSet = server.getQuestionsAndAnswers();
             int score = server.getScore();
 
@@ -149,6 +149,8 @@ public class QuizPlayerClient implements Serializable {
                 if (answer.equals(QAs[5])) {
                     score++;
                     System.out.println("CORRECT! \n 1 POINT AWARDED!");
+                } else {
+                    System.out.println("WRONG!");
                 }
 
                 //the answer needs to be checked and accumulated if correct.

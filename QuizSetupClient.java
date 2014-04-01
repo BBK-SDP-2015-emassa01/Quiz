@@ -136,23 +136,23 @@ public class QuizSetupClient {
         GetInput input = new GetInput();
 
         answers[0] = question;
-        System.out.println("Please enter in the 1ST multiple choice answer for this question (as you would like it to appear in the list):\n");
+        System.out.println("Please enter in the 1 ST multiple choice answer for this question (as you would like it to appear in the list):\n");
 
         String ans1 = input.getStringInput();
         answers[1] = ans1;
         System.out.println("Added: " + ans1 + " to the multiple choice answers.");
 
-        System.out.println("Please enter in the 2ND multiple choice answer for this question (as you would like it to appear in the list):\n");
+        System.out.println("Please enter in the 2 ND multiple choice answer for this question (as you would like it to appear in the list):\n");
         String ans2 = input.getStringInput();
         answers[2] = ans2;
         System.out.println("Added: " + ans2 + " to the multiple choice answers.");
 
-        System.out.println("Please enter in the 3RD multiple choice answer for this question (as you would like it to appear in the list):\n");
+        System.out.println("Please enter in the 3 RD multiple choice answer for this question (as you would like it to appear in the list):\n");
         String ans3 = input.getStringInput();
         answers[3] = ans3;
         System.out.println("Added: " + ans3 + " to the multiple choice answers.");
 
-        System.out.println("Please enter in the 4TF multiple choice answer for this question (as you would like it to appear in the list):\n");
+        System.out.println("Please enter in the 4 TH multiple choice answer for this question (as you would like it to appear in the list):\n");
         String ans4 = input.getStringInput();
         answers[4] = ans4;
         System.out.println("Added: " + ans4 + " to the multiple choice answers.");
