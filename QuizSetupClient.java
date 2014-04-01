@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package QuizProject;
 
 import java.net.MalformedURLException;
@@ -65,8 +64,7 @@ public class QuizSetupClient {
     public int menu() {
 
         System.out.println("What would you like to do?");
-        System.out.println("-->>Press 1 to Add a New Quiz.");
-        System.out.println("-->>Press 2 to add a question or, set of Questions and their multiple choice answers to a specified (or new) Quiz.");
+        System.out.println("-->>PRESS 1 TO ADD QUIZ.");
         System.out.println("-->>Press 3 to CLOSE A QUIZ QUOTING THE GAME ID. TO RETURN THE WINNER, FULL PLAYER DETAILS (SAVED ON SERVER)");
         System.out.println("-->>Press 4 to save and exit.");
         System.out.println("-->>Press 5 to get the current Quiz List.");
@@ -97,18 +95,17 @@ public class QuizSetupClient {
 
         boolean collectingQ = true;
         while (collectingQ) {
-            System.out.println("Please enter a question: ");
+            System.out.println("ENTER A QUESTION: ");
             GetInput input = new GetInput();
             question = input.getStringInput();
 
-            if (question.equals("end")) {
+            if (question.equalsIgnoreCase("end")) {
 //                serverQuiz.serverAddsAnswers(question, answers);
                 serverQuiz.serverAddsSetOfQuestions(id, newListOfQuestions);
                 collectingQ = false;
-                System.out.println("Set-Up Client completed entering Questions.");
+                System.out.println("SETUP COMPLETE.");
             } else {
                 newListOfQuestions.add(question);
-                System.out.println("Set-Up Client added a Question");
                 answers = clientAddsAnswers(question);
                 serverQuiz.serverAddsAnswers(question, answers);
                 serverQuiz.getQuestionsAndAnswers().put(question, answers);
@@ -126,42 +123,39 @@ public class QuizSetupClient {
 
         Object[] list = newListOfQuestions.toArray();
         for (Object a : list) {
-            System.out.println("Added Question: " + a.toString());
+            System.out.println("ADDED: " + a.toString());
         }
         return newListOfQuestions;
     }
 
     public String[] clientAddsAnswers(String question) {
         String[] answers = new String[6];
+        System.out.println("ENTER YOUR MULTIPLE ANSWER CHOICES");
 
         GetInput input = new GetInput();
 
         answers[0] = question;
-        System.out.println("Please enter in the 1 ST multiple choice answer for this question (as you would like it to appear in the list):\n");
+        System.out.println("CHOICE 1:");
 
         String ans1 = input.getStringInput();
         answers[1] = ans1;
-        System.out.println("Added: " + ans1 + " to the multiple choice answers.");
 
-        System.out.println("Please enter in the 2 ND multiple choice answer for this question (as you would like it to appear in the list):\n");
+        System.out.println("CHOICE 2:");
         String ans2 = input.getStringInput();
         answers[2] = ans2;
-        System.out.println("Added: " + ans2 + " to the multiple choice answers.");
 
-        System.out.println("Please enter in the 3 RD multiple choice answer for this question (as you would like it to appear in the list):\n");
+        System.out.println("CHOICE 3:");
         String ans3 = input.getStringInput();
         answers[3] = ans3;
-        System.out.println("Added: " + ans3 + " to the multiple choice answers.");
 
-        System.out.println("Please enter in the 4 TH multiple choice answer for this question (as you would like it to appear in the list):\n");
+        System.out.println("CHOICE 4:");
         String ans4 = input.getStringInput();
         answers[4] = ans4;
-        System.out.println("Added: " + ans4 + " to the multiple choice answers.");
 
-        System.out.println("Please enter the number for the multiple choice option for the CORRECT ANSWER followed by enter.");
+        System.out.println("CHOICE NUMBER OF CORRECT ANSWER:");
         String ans5 = input.getStringInput();
         answers[5] = ans5;
-        System.out.println("The correct answer has been saved.");
+        System.out.println("SAVED SUCCESSFULLY.");
         return answers;
 
     }
@@ -169,52 +163,30 @@ public class QuizSetupClient {
     public void dealWithSwitchRequest(int choice) throws RemoteException {
         switch (choice) {
             case 1: //deal with add a new Quiz
-                System.out.println("Enter the Name of your Quiz.");
+                System.out.println("ENTER QUIZ NAME:");
                 GetInput input = new GetInput();
                 String name = input.getStringInput();
                 int id = serverQuiz.addQuiz(name);
-                System.out.println("The ID number for the Quiz is: \"" + id + "\"");
-
-                break;
-            case 2: //deal with add a set of Questions to a specified Quiz
-
-                GetInput input1 = new GetInput();
-                System.out.println("Enter the ID number of your Quiz.");
-                int QuizId = input1.getIntInput();
-                System.out.println(serverQuiz.checkIfQuizIDExists(QuizId));
-
-                System.out.println("Enter your Question to add to the list followed by Enter. Type 'end' to finish.");
-                ArrayList<String> questionSet = clientAddsSetOfQuestions(QuizId);
-                serverQuiz.serverAddsSetOfQuestions(QuizId, questionSet);
-                //System.out.println("Please enter your next question, or 'end' to complete entering questions.");
-
+                System.out.println("QUIZ ID: \"" + id + "\"");
+                System.out.println("ENTER THE QUESTIONS. TYPE 'END' TO FINISH. ");
+                ArrayList<String> questionSet = clientAddsSetOfQuestions(id);
+                serverQuiz.serverAddsSetOfQuestions(id, questionSet);
                 break;
             case 3: //currently empty
 
                 break;
-            case 4: //exit
+            case 4: //exit given the Quiz ID
                 running = false;
                 //NEED TO SERIALIZE DATA HERE.
                 System.out.println("The program has saved and closed. Thanks for playing the Quiz Game!");
+                //notify who is the winner getScore()
                 System.exit(0);
                 break;
-//            case 5:
-//                try {
-//                    Object[] quizArray = serverQuiz.getCurrentQuizList();
-//                    for (Object a : quizArray) {
-//                        Quiz b = (Quiz) a;
-//                        System.out.println("Quiz Name: " + b.getQuizName());
-//                    }
-//                    System.out.println("This is the complete list. If nothing has appeared, then the list is empty.\n\n");
-//                } catch (NullPointerException e) {
-//                    System.out.println("That ID does not exist.");
-//                }
-//                break;
             case 6:
                 System.out.println("What is the ID of the Quiz? (If you do not know the Quiz ID you can check it using the get Quiz List (Option 5)).");
                 GetInput input2 = new GetInput();
-                Object[] questions = serverQuiz.getListOfQuestionsInQuiz(input2.getIntInput());
-                for (Object a : questions) {
+                Object[] questions2 = serverQuiz.getListOfQuestionsInQuiz(input2.getIntInput());
+                for (Object a : questions2) {
                     System.out.println("Question: " + a.toString());
                 }
                 break;
@@ -222,7 +194,7 @@ public class QuizSetupClient {
                 //add the answers to an already specified set of quiz questions
                 input2 = new GetInput();
                 System.out.println("Enter the ID number of your Quiz.");
-                QuizId = input2.getIntInput();
+                int QuizId = input2.getIntInput();
                 System.out.println(serverQuiz.checkIfQuizIDExists(QuizId));
                 break;
             //

@@ -128,11 +128,9 @@ public class QuizPlayerClient implements Serializable {
         int score = serverQuiz.getScore();
 
         for (int i = 0; i < questions.size(); i++) {
-            System.out.println(questions.get(i));
 
             Map<String, String[]> thisSet = serverQuiz.getQuestionsAndAnswers();
-            System.out.println(thisSet.toString());
-            //if (thisSet.containsKey(questions.get(i))) {
+
             try {
                 String[] QAs = thisSet.get(questions.get(i));
 
