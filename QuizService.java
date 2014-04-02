@@ -35,5 +35,7 @@ public interface QuizService extends Remote {
 
     public Map<String, String[]> getQuestionsAndAnswers() throws RemoteException;
 
-    public int getScore() throws RemoteException;
+    public int getHighestScoreForQuiz(int quizID) throws RemoteException;
+    
+    public void setHighestScoreForQuiz(int quizID, int score) throws RemoteException;
 }

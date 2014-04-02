@@ -29,11 +29,8 @@ public class QuizServer extends UnicastRemoteObject implements QuizService {
 
     private Map<String, String[]> questionAnswers = new HashMap<>(); //holds an array, where pos[0] is the Question and pos[1-4] are the answers.
 
-    private int score = 0;
-
-//    private GetInput input = new GetInput();//a utilities class to stop code repetition for System.out.println.
     public QuizServer() throws RemoteException {
-// nothing to initialise for this server
+        // nothing to initialise for this server
     }
 
     public Set<Quiz> getQuizzes() throws RemoteException {
@@ -54,8 +51,24 @@ public class QuizServer extends UnicastRemoteObject implements QuizService {
         return generatedID;
     }
 
-    public int getScore() {
-        return this.score;
+    public int getHighestScoreForQuiz(int QuizID) {
+        int highestScoreForQuiz = 0;
+        for (Quiz a : quizzes) {
+            if (a.getQuizID() == QuizID) {
+                highestScoreForQuiz = a.getHighestScore();
+            }
+        }
+        return highestScoreForQuiz;
+    }
+
+    public void setHighestScoreForQuiz(int QuizID, int score) {
+        for (Quiz a : quizzes) {
+            if (a.getQuizID() == QuizID) {
+                if (a.getHighestScore() < score) {
+                    a.setHighestScore(score);
+                }
+            }
+        }
     }
 
     public int addQuiz(String s) throws RemoteException {
@@ -65,7 +78,7 @@ public class QuizServer extends UnicastRemoteObject implements QuizService {
         newQuiz.setQuizName(s);
         quizzes.add(newQuiz);
         quizMap.put(ID, null);
-        System.out.println("Message to Server: the Set-up Client has added \"" + s + "\" to the Quiz List.");
+        System.out.println("ADDED QUIZ: " + s);
         return ID;
     }
 
@@ -74,22 +87,20 @@ public class QuizServer extends UnicastRemoteObject implements QuizService {
 
         for (Object a : quizArray) {
             Quiz b = (Quiz) a;
-            System.out.println("Quiz Name: " + b.getQuizName());
+            System.out.println("QUIZ: " + b.getQuizName());
         }
         return quizArray;
     }
 
     public Object[] getListOfQuestionsInQuiz(int id) {
-        System.out.println("k");
         if (quizMap.containsKey(id)) {
             ArrayList<String> thisListOfQuestions = quizMap.get(id);
-            System.out.println("ok");
             System.out.println(thisListOfQuestions.toString());
             Object[] thisArrayOfQuestions = thisListOfQuestions.toArray();
             return thisArrayOfQuestions;
         } else {
             Object[] message = new String[1];
-            message[0] = "That ID does not exist. Check your ID was typed in correctly and try again please.";
+            message[0] = "ID DOES NOT EXIST";
             return message;
         }
     }
@@ -97,9 +108,9 @@ public class QuizServer extends UnicastRemoteObject implements QuizService {
     public String checkIfQuizIDExists(int ID) throws RemoteException {
         String result;
         if (quizMap.containsKey(ID)) {
-            result = "Adding set of questions to Quiz: " + ID;
+            result = "ADDING TO QUIZ: " + ID;
         } else {
-            result = "Creating Quiz: " + ID;
+            result = "CREATING QUIZ: " + ID;
         }
         return result;
     }
@@ -115,8 +126,7 @@ public class QuizServer extends UnicastRemoteObject implements QuizService {
         quizMap.put(ID, newListOfQuestions);
         System.out.println(quizMap.get(ID).toString());
 
-        System.out.println("Message to Server: the Client has added a question to the Question List with ID number "
-                + ID + ".\n");
+        System.out.println("ADDED QUESTION TO QUIZ:" + ID);
     }
 
     public void serverAddsAnswers(String question, String[] answers) throws RemoteException {

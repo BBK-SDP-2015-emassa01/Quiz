@@ -37,7 +37,7 @@ public class QuizSetupClient {
 //        if (System.getSecurityManager() == null) {
 //        System.setSecurityManager(new RMISecurityManager());
 //        }
-        System.out.println("WELCOME TO THE QUIZ CREATOR!");
+        System.out.println("\t\t\t\tWELCOME TO THE QUIZ CREATOR!");
     }
 
     public void launch() throws RemoteException {

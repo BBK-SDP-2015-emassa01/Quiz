@@ -35,7 +35,7 @@ public class QuizPlayerClient implements Serializable {
 //        if (System.getSecurityManager() == null) {
 //        System.setSecurityManager(new RMISecurityManager());
 //        }
-        System.out.println("WELCOME! PLAY A QUIZ HERE!");
+        System.out.println("\t\t\t\tWELCOME! PLAY A QUIZ HERE!");
     }
 
     public void launch() throws RemoteException {
@@ -75,14 +75,12 @@ public class QuizPlayerClient implements Serializable {
 
     public int menu() throws RemoteException {
 
-        System.out.println("\n\nBelow is the current quiz list. ");
+        System.out.println("ENTER QUIZ ID TO ACCESS: ");
         printOutQuizList();
-        System.out.println("Please select a quiz you would like to play by entering it's ID NUMBER. \n"
-                + "Type 'end' to save and exit.\n"
-                + "Your score will be returned at the end of the quiz.");
+        
         Scanner in = new Scanner(System.in);
         String input = in.nextLine();
-        if (input.equals("end")) {
+        if (input.equalsIgnoreCase("end")) {
             running = false;
         }
         int switchValue = Integer.parseInt(input);
@@ -92,7 +90,7 @@ public class QuizPlayerClient implements Serializable {
 
     public int selectQuizToPlay() {
         //return quiz ID that the player wants to play
-        System.out.println("Please enter the ID number of the Quiz you want to play.");
+        System.out.println("ENTER ID OF QUIZ TO ACCESS.");
         Scanner input = new Scanner(System.in);
         int result = input.nextInt();
         return result;
@@ -101,19 +99,21 @@ public class QuizPlayerClient implements Serializable {
     public void printOutQuizList() throws RemoteException {
         try {
             Object[] quizArray = serverQuiz.getCurrentQuizList();
+            if (serverQuiz.getCurrentQuizList() == null){
+                System.out.println("NO SAVED QUIZZES.");
+            }
             for (Object a : quizArray) {
                 Quiz b = (Quiz) a;
-                System.out.println("Quiz Name: " + b.getQuizName() + ", Quiz ID: " + b.getQuizID());
+                System.out.println("ID: "+b.getQuizID()+"\t|| NAME: "+ b.getQuizName());
             }
-            System.out.println("This is the complete list. If nothing has appeared, then the list is empty.\n");
+            //System.out.println("THE COMPLETE LIST:");
         } catch (NullPointerException e) {
-            System.out.println("That ID does not exist.");
+            System.out.println("ID DOES NOT EXIST");
         }
     }
 
-    public int getScoreForPlayer() throws RemoteException {
-        return serverQuiz.getScore();
-
+    public int getHighestScoreForPlayer(int quizID) throws RemoteException {
+        return serverQuiz.getHighestScoreForQuiz(quizID);
     }
 
     /**
@@ -125,7 +125,7 @@ public class QuizPlayerClient implements Serializable {
 
         Map<Integer, ArrayList<String>> quizMap = serverQuiz.getQuizMap();
         ArrayList<String> questions = quizMap.get(selectedQuizID);
-        int score = serverQuiz.getScore();
+        int tempScore = 0;
 
         for (int i = 0; i < questions.size(); i++) {
 
@@ -146,18 +146,22 @@ public class QuizPlayerClient implements Serializable {
                 String answer = input.getStringInput();
 
                 if (answer.equals(QAs[5])) {
-                    score++;
-                    System.out.println("CORRECT! \n 1 POINT AWARDED!");
-                } else {
+                    tempScore++;
+                    System.out.println("CORRECT! 1 POINT AWARDED!");
+                } else { 
                     System.out.println("WRONG!");
-                //}
-
-                    //the answer needs to be checked and accumulated if correct.
                 }
-            } catch (Exception e) {
+                
+                if (serverQuiz.getHighestScoreForQuiz(selectedQuizID)< tempScore){
+                    serverQuiz.setHighestScoreForQuiz(selectedQuizID, tempScore);
+                    
+                }
+                } catch (Exception e) {
                 System.out.println("Questions for this Quiz were not found.");
                 e.printStackTrace();
             }
+            System.out.println("QUIZ COMPLETE. YOUR SCORE: "+ tempScore);
+            System.out.println("YOU HAVE THE HIGHEST SCORE! WINNER!!!");
         }
     }
 }
