@@ -62,14 +62,12 @@ public class QuizSetupClient {
     }
 
     public int menu() {
-
-        System.out.println("What would you like to do?");
-        System.out.println("-->>PRESS 1 TO ADD QUIZ.");
-        System.out.println("-->>Press 3 to CLOSE A QUIZ QUOTING THE GAME ID. TO RETURN THE WINNER, FULL PLAYER DETAILS (SAVED ON SERVER)");
-        System.out.println("-->>Press 4 to save and exit.");
-        System.out.println("-->>Press 5 to get the current Quiz List.");
-        System.out.println("-->>Press 6 to get the list of questions for a specific Quiz.");
-        System.out.println("-->>Press 7 to add the answers to an already specified set of quiz questions.");
+        System.out.println("-> PRESS 1 TO ADD QUIZ.");
+        System.out.println("-> Press 2 FOR QUIZ LIST.");
+        System.out.println("-> Press 3 TO LIST QUESTIONS OF A SPECIFIED QUIZ");
+        System.out.println("-> Press 4 TO CLOSE A QUIZ AND REVEAL WINNER!");
+        System.out.println("-> Press 5 TO SAVE AND EXIT.");
+        
 
         Scanner in = new Scanner(System.in);
         String input = in.nextLine();
@@ -152,7 +150,7 @@ public class QuizSetupClient {
         String ans4 = input.getStringInput();
         answers[4] = ans4;
 
-        System.out.println("CHOICE NUMBER OF CORRECT ANSWER:");
+        System.out.println("ENTER NUMBER OF CORRECT ANSWER (1,2,3 OR 4):");
         String ans5 = input.getStringInput();
         answers[5] = ans5;
         System.out.println("SAVED SUCCESSFULLY.");
@@ -172,34 +170,28 @@ public class QuizSetupClient {
                 ArrayList<String> questionSet = clientAddsSetOfQuestions(id);
                 serverQuiz.serverAddsSetOfQuestions(id, questionSet);
                 break;
-            case 3: //currently empty
-
+            case 2:
+                //get current quiz list
+                serverQuiz.getCurrentQuizList();
                 break;
-            case 4: //exit given the Quiz ID
-                running = false;
-                //NEED TO SERIALIZE DATA HERE.
-                System.out.println("The program has saved and closed. Thanks for playing the Quiz Game!");
-                //notify who is the winner getScore()
-                System.exit(0);
-                break;
-            case 6:
-                System.out.println("What is the ID of the Quiz? (If you do not know the Quiz ID you can check it using the get Quiz List (Option 5)).");
+            case 3:
+                System.out.println("ENTER QUIZ ID:");
                 GetInput input2 = new GetInput();
                 Object[] questions2 = serverQuiz.getListOfQuestionsInQuiz(input2.getIntInput());
                 for (Object a : questions2) {
                     System.out.println("Question: " + a.toString());
                 }
                 break;
-            case 7:
-                //add the answers to an already specified set of quiz questions
-                input2 = new GetInput();
-                System.out.println("Enter the ID number of your Quiz.");
-                int QuizId = input2.getIntInput();
-                System.out.println(serverQuiz.checkIfQuizIDExists(QuizId));
+            case 4 ://QUOTE QUIZ ID AND CLOSE. FULL PLAYER DETAILS SAVED ON SERVER.
                 break;
-            //
+            case 5: //exit given the Quiz ID
+                running = false;
+                //NEED TO SERIALIZE DATA HERE.
+                System.out.println("SAVED. THANKS FOR PLAYING THE QUIZ GAME!");
+                System.exit(0);
+                break;
             default:
-                System.out.println("Something went wrong, please try again.");
+                System.out.println("SOMETHING WENT WRONG. PLEASE TRY AGAIN.");
                 break;
         }
     }
