@@ -24,7 +24,7 @@ public class QuizSetupClient {
 
     QuizService serverQuiz;
     boolean running = true;
-    
+
     Remote service;
     private int quizID;
     private Serialize serializers;
@@ -36,6 +36,7 @@ public class QuizSetupClient {
 //        if (System.getSecurityManager() == null) {
 //        System.setSecurityManager(new RMISecurityManager());
 //        }
+//        serverQuiz.deserialize();
         System.out.println("\t\t\t\tWELCOME TO THE QUIZ SETUP TOOL!");
     }
 
@@ -66,7 +67,6 @@ public class QuizSetupClient {
         System.out.println("-> Press 3 TO LIST QUESTIONS OF A SPECIFIED QUIZ");
         System.out.println("-> Press 4 TO CLOSE A QUIZ AND REVEAL WINNER!");
         System.out.println("-> Press 5 TO SAVE AND EXIT.");
-        
 
         Scanner in = new Scanner(System.in);
         String input = in.nextLine();
@@ -171,7 +171,12 @@ public class QuizSetupClient {
                 break;
             case 2:
                 //get current quiz list
-                serverQuiz.getCurrentQuizList();
+                Object[] quizList = serverQuiz.getCurrentQuizList();
+                System.out.println("CURRENT QUIZ LIST: ");
+                for (Object a : quizList) {
+                    Quiz b = (Quiz) a;
+                    System.out.println("QUIZ: " + b.getQuizName());
+                }
                 break;
             case 3:
                 System.out.println("ENTER QUIZ ID:");
@@ -181,8 +186,8 @@ public class QuizSetupClient {
                     System.out.println("Question: " + a.toString());
                 }
                 break;
-            case 4 ://QUOTE QUIZ ID AND CLOSE. FULL PLAYER DETAILS SAVED ON SERVER.
-                closeDown(); 
+            case 4://QUOTE QUIZ ID AND CLOSE. FULL PLAYER DETAILS SAVED ON SERVER.
+                closeDown();
                 break;
             case 5: //exit given the Quiz ID
                 running = false;
@@ -197,8 +202,8 @@ public class QuizSetupClient {
                 break;
         }
     }
-    
-    public void closeDown() throws RemoteException{
+
+    public void closeDown() throws RemoteException {
         serverQuiz.serialize();
     }
 }

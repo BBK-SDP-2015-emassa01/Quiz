@@ -27,8 +27,12 @@ public class QuizServerLauncher {
     //private Serialize serializers;
     
     String serviceName = "quiz";
+    
+    public QuizServerLauncher() throws RemoteException{
+        // ERROR serverQuiz.deserialize();
+    }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
         QuizServerLauncher test = new QuizServerLauncher();
         test.launch();
     }

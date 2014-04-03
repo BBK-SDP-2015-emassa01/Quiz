@@ -14,7 +14,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
 /**
  *
@@ -40,6 +39,7 @@ public class QuizPlayerClient implements Serializable {
 //        if (System.getSecurityManager() == null) {
 //        System.setSecurityManager(new RMISecurityManager());
 //        }
+        //serverQuiz.deserialize();
         System.out.println("\t\t\t\tWELCOME! PLAY A QUIZ HERE!");
         System.out.println("ENTER YOUR PLAYER NAME: ");
         player = input.getStringInput();
@@ -54,7 +54,7 @@ public class QuizPlayerClient implements Serializable {
 
             keepLooping();
 
-        } catch (Exception e) {
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
@@ -72,8 +72,10 @@ public class QuizPlayerClient implements Serializable {
             playSelectedQuiz(selectedQuizID);
             }
             else if (response ==2){
+                //getWinnerForQuiz NOT WORKING - IT IS IN THE INTERFACE!?
                 serverQuiz.getWinnerForQuiz(selectedQuizID);
                 serverQuiz.serialize();
+                System.out.println("FINISHED SERIALIZATION.");
             }
             keepLooping();
         } else {
@@ -92,7 +94,7 @@ public class QuizPlayerClient implements Serializable {
         try {
             QuizPlayerClient playerClient = new QuizPlayerClient();
             playerClient.launch();
-        } catch (Exception ex) {
+        } catch (NotBoundException | MalformedURLException | RemoteException ex) {
 
         }
     }
@@ -108,9 +110,9 @@ public class QuizPlayerClient implements Serializable {
             running = false;
             terminateQuiz();
         }
-        int switchValue = Integer.parseInt(input);
+        int quizID = Integer.parseInt(input);
 
-        return switchValue;
+        return quizID;
     }
 
     public int selectQuizToPlay() {
@@ -183,7 +185,7 @@ public class QuizPlayerClient implements Serializable {
                     serverQuiz.setHighestScoreForQuiz(selectedQuizID, tempScore);
                     
                 }
-                } catch (Exception e) {
+                } catch (RemoteException e) {
                 System.out.println("Questions for this Quiz were not found.");
                 e.printStackTrace();
             }
@@ -193,7 +195,7 @@ public class QuizPlayerClient implements Serializable {
         if (tempScore>highestScoreForQuiz){
         System.out.println("\n\nYOU HAVE THE HIGHEST SCORE SO FAR!");
         playerName.setPlayerScore(highestScoreForQuiz);
-        serverQuiz.getHighestScorePlayerIDMap().put(selectedQuizID, playerName);
+        serverQuiz.setHighestScorePlayerIDMap(selectedQuizID, playerName);
         }
     }
 }

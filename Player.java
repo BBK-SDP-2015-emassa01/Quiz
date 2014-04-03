@@ -6,11 +6,13 @@
 
 package QuizProject;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Esha
  */
-public class Player {
+public class Player implements Serializable {
     
     String playerName;
     
