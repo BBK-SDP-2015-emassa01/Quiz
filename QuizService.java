@@ -38,4 +38,17 @@ public interface QuizService extends Remote {
     public int getHighestScoreForQuiz(int quizID) throws RemoteException;
     
     public void setHighestScoreForQuiz(int quizID, int score) throws RemoteException;
+    
+    //public void writeQuizServer()throws RemoteException;
+    
+    public void printQuestions(int id) throws RemoteException;
+        
+    public void serialize()throws RemoteException;
+    
+    public void deserialize() throws RemoteException;
+    
+    public Map<Integer, Player> getHighestScorePlayerIDMap() throws RemoteException;
+    
+    public void getWinnerForQuiz(int quizID) throws RemoteException;
+
 }

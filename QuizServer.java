@@ -5,7 +5,15 @@
  */
 package QuizProject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -21,16 +29,88 @@ import java.util.Set;
  *
  * @author Esha
  */
-public class QuizServer extends UnicastRemoteObject implements QuizService {
-
+public class QuizServer extends UnicastRemoteObject implements QuizService, Serializable {
+    
+    private static final String FILE_NAME = "quizData";
+    
     private Set<Quiz> quizzes = new HashSet<>(); //set of all current quizzes
 
     private Map<Integer, ArrayList<String>> quizMap = new HashMap<>();//map Quiz ID to List of Questions
 
     private Map<String, String[]> questionAnswers = new HashMap<>(); //holds an array, where pos[0] is the Question and pos[1-4] are the answers.
 
-    public QuizServer() throws RemoteException {
-        // nothing to initialise for this server
+    private Map<Integer, Player> highestScorePlayerIDMap = new HashMap<>();// maps Quiz ID to Player (holds player name, quiz ID and score for Quizzes)
+//    private Serialize serializer;
+//    
+//    private QuizService quizData;
+//    
+    private String fileName = "quizData";
+    
+    public QuizServer() throws RemoteException{ 
+        //nothing here
+    }
+    
+//    public QuizServer(QuizService quizServer, Serialize serialize) throws RemoteException {
+//        this.serializer = serialize;
+//        this.serializer.setFileName(FILE_NAME);
+//        if (serialize.quizDataExists()){
+//            Object qData = serialize.deserialize();
+//            quizData = (QuizServer) qData;
+//        } else {
+//            quizData = quizServer;
+//        }
+//    }
+    
+    public void serialize() throws RemoteException{
+        try {
+            ObjectOutputStream 
+                    oos = new ObjectOutputStream(
+                            new BufferedOutputStream(
+                            new FileOutputStream(fileName)));
+            
+            oos.writeObject(quizzes);
+            oos.close();
+            
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void deserialize() throws RemoteException{
+        //QuizService quizServer;
+        try {
+            ObjectInputStream ois = new ObjectInputStream(
+                    new BufferedInputStream(
+                            new FileInputStream (fileName)));
+            
+            QuizService quizServer= (QuizServer) ois.readObject();
+            
+            ois.close();
+            
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+             ex.printStackTrace();
+        } 
+       // return quizServer;
+    }
+
+    public void getWinnerForQuiz(int quizID) throws RemoteException {
+        if (highestScorePlayerIDMap.get(quizID) == null){
+            System.out.println("NO HIGHEST SCORER YET.");
+        } else {
+        Player winner = highestScorePlayerIDMap.get(quizID);
+        System.out.println("THE WINNER FOR QUIZ " + quizID + " IS" + winner.getPlayerName());
+        System.out.println("HIGHEST SCORE:" + winner.getPlayerScore());
+        }
+    }
+            
+    public Map<Integer, Player> getHighestScorePlayerIDMap() throws RemoteException {
+        return this.highestScorePlayerIDMap;
     }
 
     public Set<Quiz> getQuizzes() throws RemoteException {
@@ -160,13 +240,17 @@ public class QuizServer extends UnicastRemoteObject implements QuizService {
         }
     }
 
-    public void printQuestions(int id) {
+    public void printQuestions(int id) throws RemoteException {
         Object[] quesForId = quizMap.get(id).toArray();
         System.out.println("The list of Questions added so far are:\n");
         for (Object a : quesForId) {
             System.out.println(a.toString());
         }
-
     }
+        
+//        public void writeQuizServer() throws RemoteException{
+//            serializer.serialize(this);
+//        }
+
 
 }

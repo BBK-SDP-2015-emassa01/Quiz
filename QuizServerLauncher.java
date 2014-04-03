@@ -7,10 +7,12 @@ package QuizProject;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.UnmarshalException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
@@ -18,6 +20,13 @@ import java.rmi.server.UnicastRemoteObject;
  * @author Esha
  */
 public class QuizServerLauncher {
+    
+    QuizService serverQuiz;
+    QuizSetupClient client;
+    QuizPlayerClient player;
+    //private Serialize serializers;
+    
+    String serviceName = "quiz";
 
     public static void main(String[] args) {
         QuizServerLauncher test = new QuizServerLauncher();
@@ -37,7 +46,6 @@ public class QuizServerLauncher {
             // 4. Register (bind) the server object on the registy.
             // The registry may be on a different machine
             String registryHost = "//localhost/";
-            String serviceName = "quiz";
             Naming.rebind(registryHost + serviceName, server);
         } catch (UnmarshalException ex) {
             ex.printStackTrace();
@@ -49,6 +57,18 @@ public class QuizServerLauncher {
             ex.printStackTrace();
         }
 
+    }
+    
+    public void close() throws RemoteException{
+        serverQuiz.serialize();
+        Registry registry = LocateRegistry.getRegistry(1099);
+        try{
+            registry.unbind(serviceName);
+            UnicastRemoteObject.unexportObject(client.service, true);
+            UnicastRemoteObject.unexportObject(player.service, true);
+        } catch(NotBoundException ex){
+            throw new RemoteException("Could not un-register, quitting anyway...", ex);
+        }
     }
 
 }

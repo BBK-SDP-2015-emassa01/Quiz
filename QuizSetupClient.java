@@ -23,12 +23,11 @@ import java.util.Set;
 public class QuizSetupClient {
 
     QuizService serverQuiz;
-//    QuizService clientQuiz;
-
     boolean running = true;
-
+    
     Remote service;
     private int quizID;
+    private Serialize serializers;
 
     public QuizSetupClient() throws NotBoundException, MalformedURLException, RemoteException {
         serverQuiz = new QuizServer();
@@ -37,7 +36,7 @@ public class QuizSetupClient {
 //        if (System.getSecurityManager() == null) {
 //        System.setSecurityManager(new RMISecurityManager());
 //        }
-        System.out.println("\t\t\t\tWELCOME TO THE QUIZ CREATOR!");
+        System.out.println("\t\t\t\tWELCOME TO THE QUIZ SETUP TOOL!");
     }
 
     public void launch() throws RemoteException {
@@ -81,6 +80,7 @@ public class QuizSetupClient {
             dealWithSwitchRequest(menu());
             keepLooping();
         } else {
+//            serverQuiz.writeQuizServer();
             System.exit(0);
         }
     }
@@ -98,7 +98,7 @@ public class QuizSetupClient {
             question = input.getStringInput();
 
             if (question.equalsIgnoreCase("end")) {
-//                serverQuiz.serverAddsAnswers(question, answers);
+                System.out.println("SAVED SUCCESSFULLY.");
                 serverQuiz.serverAddsSetOfQuestions(id, newListOfQuestions);
                 collectingQ = false;
                 System.out.println("SETUP COMPLETE.");
@@ -153,7 +153,6 @@ public class QuizSetupClient {
         System.out.println("ENTER NUMBER OF CORRECT ANSWER (1,2,3 OR 4):");
         String ans5 = input.getStringInput();
         answers[5] = ans5;
-        System.out.println("SAVED SUCCESSFULLY.");
         return answers;
 
     }
@@ -183,16 +182,23 @@ public class QuizSetupClient {
                 }
                 break;
             case 4 ://QUOTE QUIZ ID AND CLOSE. FULL PLAYER DETAILS SAVED ON SERVER.
+                closeDown(); 
                 break;
             case 5: //exit given the Quiz ID
                 running = false;
                 //NEED TO SERIALIZE DATA HERE.
                 System.out.println("SAVED. THANKS FOR PLAYING THE QUIZ GAME!");
+                //serverQuiz.writeQuizServer();
+                serverQuiz.serialize();
                 System.exit(0);
                 break;
             default:
                 System.out.println("SOMETHING WENT WRONG. PLEASE TRY AGAIN.");
                 break;
         }
+    }
+    
+    public void closeDown() throws RemoteException{
+        serverQuiz.serialize();
     }
 }
