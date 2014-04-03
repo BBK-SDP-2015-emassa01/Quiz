@@ -29,7 +29,7 @@ import java.util.Set;
  *
  * @author Esha
  */
-public class QuizServer extends UnicastRemoteObject implements QuizService, Serializable {
+public class QuizServiceImpl extends UnicastRemoteObject implements QuizService, Serializable {
 
     private static final String FILE_NAME = "quizData";
 
@@ -46,7 +46,7 @@ public class QuizServer extends UnicastRemoteObject implements QuizService, Seri
 //    
     private final String fileName = "quizData.txt";
 
-    public QuizServer() throws RemoteException {
+    public QuizServiceImpl() throws RemoteException {
         QuizService serverQuiz;
         if (new File(fileName).exists()){
 
@@ -54,7 +54,7 @@ public class QuizServer extends UnicastRemoteObject implements QuizService, Seri
                 new BufferedInputStream(
                         new FileInputStream(fileName)));) {
                     serverQuiz = null;
-                    serverQuiz = (QuizServer) ois.readObject();
+                    serverQuiz = (QuizServiceImpl) ois.readObject();
 
                 } catch (IOException | ClassNotFoundException ex) {
                     System.err.println("On write error " + ex);
@@ -99,13 +99,13 @@ public class QuizServer extends UnicastRemoteObject implements QuizService, Seri
      */
     @Override
     public QuizService deserialize() throws RemoteException {
-        QuizService quizServer = new QuizServer();
+        QuizService quizServer = new QuizServiceImpl();
         try {
             ObjectInputStream ois = new ObjectInputStream(
                     new BufferedInputStream(
                             new FileInputStream(fileName)));
 
-            quizServer = (QuizServer) ois.readObject();
+            quizServer = (QuizServiceImpl) ois.readObject();
 
             ois.close();
 

@@ -30,7 +30,7 @@ public class QuizSetupClient {
     private Serialize serializers;
 
     public QuizSetupClient() throws NotBoundException, MalformedURLException, RemoteException {
-        serverQuiz = new QuizServer();
+        serverQuiz = new QuizServiceImpl();
 //        clientQuiz = new QuizServer();
         Remote service = this.service = Naming.lookup("//127.0.0.1:1099/quiz");
 //        if (System.getSecurityManager() == null) {

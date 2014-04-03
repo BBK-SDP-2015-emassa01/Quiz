@@ -46,7 +46,7 @@ public class QuizServerLauncher {
             // 2. Create the registry if there is not one
             LocateRegistry.createRegistry(1099);
             // 3. Create the server object
-            QuizServer server = new QuizServer();
+            QuizServiceImpl server = new QuizServiceImpl();
             // 4. Register (bind) the server object on the registy.
             // The registry may be on a different machine
             String registryHost = "//localhost/";
