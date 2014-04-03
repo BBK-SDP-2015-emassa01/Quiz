@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class Serialize implements Serializable{
     private String fileName;
     
-    public void serialize(QuizServiceImpl quizData){
+    public void serialize(QuizServer quizData){
         try {
             FileOutputStream fos = new FileOutputStream(fileName);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -41,13 +41,13 @@ public class Serialize implements Serializable{
     }
     
     public Object deserialize(){
-        QuizServiceImpl quizServer = null;
+        QuizServer quizServer = null;
         
         try {
             FileInputStream fis = new FileInputStream(fileName);
             ObjectInputStream ois = new ObjectInputStream(fis);
             
-            quizServer= (QuizServiceImpl) ois.readObject();
+            quizServer= (QuizServer) ois.readObject();
             
             ois.close();
             fis.close();

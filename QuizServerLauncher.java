@@ -46,17 +46,14 @@ public class QuizServerLauncher {
             // 2. Create the registry if there is not one
             LocateRegistry.createRegistry(1099);
             // 3. Create the server object
-            QuizServiceImpl server = new QuizServiceImpl();
+            QuizService server = new QuizServer();
             // 4. Register (bind) the server object on the registy.
             // The registry may be on a different machine
             String registryHost = "//localhost/";
             Naming.rebind(registryHost + serviceName, server);
         } catch (UnmarshalException ex) {
             ex.printStackTrace();
-        } catch (MalformedURLException ex) {
-
-            ex.printStackTrace();
-        } catch (RemoteException ex) {
+        } catch (MalformedURLException | RemoteException ex) {
 
             ex.printStackTrace();
         }

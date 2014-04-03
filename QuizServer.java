@@ -29,7 +29,7 @@ import java.util.Set;
  *
  * @author Esha
  */
-public class QuizServiceImpl extends UnicastRemoteObject implements QuizService, Serializable {
+public class QuizServer extends UnicastRemoteObject implements QuizService, Serializable{
 
     private static final String FILE_NAME = "quizData";
 
@@ -46,15 +46,15 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
 //    
     private final String fileName = "quizData.txt";
 
-    public QuizServiceImpl() throws RemoteException {
-        QuizService serverQuiz;
+    public QuizServer() throws RemoteException {
+//        QuizService serverQuiz;
         if (new File(fileName).exists()){
 
         try (ObjectInputStream ois = new ObjectInputStream(
                 new BufferedInputStream(
                         new FileInputStream(fileName)));) {
-                    serverQuiz = null;
-                    serverQuiz = (QuizServiceImpl) ois.readObject();
+                    QuizService serverQuiz = null;
+                    serverQuiz = (QuizServer) ois.readObject();
 
                 } catch (IOException | ClassNotFoundException ex) {
                     System.err.println("On write error " + ex);
@@ -76,7 +76,6 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
      *
      * @throws RemoteException
      */
-    @Override
     public void serialize() throws RemoteException {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(
@@ -97,15 +96,14 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
      *
      * @throws RemoteException
      */
-    @Override
     public QuizService deserialize() throws RemoteException {
-        QuizService quizServer = new QuizServiceImpl();
+        QuizService quizServer = new QuizServer();
         try {
             ObjectInputStream ois = new ObjectInputStream(
                     new BufferedInputStream(
                             new FileInputStream(fileName)));
 
-            quizServer = (QuizServiceImpl) ois.readObject();
+            quizServer = (QuizServer) ois.readObject();
 
             ois.close();
 
@@ -125,7 +123,6 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
      * @param quizID
      * @throws RemoteException
      */
-    @Override
     public void getWinnerForQuiz(int quizID) throws RemoteException {
         System.out.println("got to servers");
         System.out.println(highestScorePlayerIDMap);
@@ -166,13 +163,14 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
         return this.questionAnswers;
     }
 
+    @Override
     public int getRandomID() throws RemoteException {
         Random random = new Random();
         int generatedID = random.nextInt(Integer.MAX_VALUE);
         return generatedID;
     }
 
-    public int getHighestScoreForQuiz(int QuizID) {
+    public int getHighestScoreForQuiz(int QuizID) throws RemoteException{
         int highestScoreForQuiz = 0;
         for (Quiz a : quizzes) {
             if (a.getQuizID() == QuizID) {
@@ -182,7 +180,7 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
         return highestScoreForQuiz;
     }
 
-    public void setHighestScoreForQuiz(int QuizID, int score) {
+    public void setHighestScoreForQuiz(int QuizID, int score) throws RemoteException{
         for (Quiz a : quizzes) {
             if (a.getQuizID() == QuizID) {
                 if (a.getHighestScore() < score) {
@@ -203,7 +201,7 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
         return ID;
     }
 
-    public Object[] getCurrentQuizList() {
+    public Object[] getCurrentQuizList() throws RemoteException{
         Object[] quizArray = quizzes.toArray();
 
         for (Object a : quizArray) {
@@ -213,7 +211,7 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
         return quizArray;
     }
 
-    public Object[] getListOfQuestionsInQuiz(int id) {
+    public Object[] getListOfQuestionsInQuiz(int id) throws RemoteException {
         if (quizMap.containsKey(id)) {
             ArrayList<String> thisListOfQuestions = quizMap.get(id);
             System.out.println(thisListOfQuestions.toString());
@@ -226,6 +224,7 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
         }
     }
 
+    @Override
     public String checkIfQuizIDExists(int ID) throws RemoteException {
         String result;
         if (quizMap.containsKey(ID)) {
@@ -236,6 +235,7 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
         return result;
     }
 
+    @Override
     public synchronized void serverAddsSetOfQuestions(int ID, ArrayList<String> newListOfQuestions) throws RemoteException {
 //        if (quizMap.containsKey(ID)) {
 //            System.out.println("id:" + ID);
@@ -250,6 +250,7 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
         System.out.println("ADDED QUESTION TO QUIZ:" + ID);
     }
 
+    @Override
     public void serverAddsAnswers(String question, String[] answers) throws RemoteException {
 //        if (quizMap.containsKey(ID)) {
 //            String[] temp = QuestionAnswers.get(ID);
@@ -262,6 +263,7 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
 
     }
 
+    @Override
     public void serverAddstoQuizMap(String question, String[] answers) throws RemoteException {
 
         questionAnswers.put(question, answers);
@@ -269,6 +271,7 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
         System.out.println("QA" + questionAnswers.toString());
     }
 
+    @Override
     public void addAnswersToQuestions(int ID) throws RemoteException {
         try {
             if (quizMap.containsKey(ID)) {
@@ -281,6 +284,7 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
         }
     }
 
+    @Override
     public void printQuestions(int id) throws RemoteException {
         Object[] quesForId = quizMap.get(id).toArray();
         System.out.println("The list of Questions added so far are:\n");
@@ -289,6 +293,7 @@ public class QuizServiceImpl extends UnicastRemoteObject implements QuizService,
         }
     }
 
+    @Override
     public void writeQuizServer() throws RemoteException {
 
     }

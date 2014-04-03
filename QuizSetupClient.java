@@ -5,6 +5,7 @@
  */
 package QuizProject;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -20,7 +21,7 @@ import java.util.Set;
  *
  * @author Esha
  */
-public class QuizSetupClient {
+public class QuizSetupClient implements Serializable{
 
     QuizService serverQuiz;
     boolean running = true;
@@ -30,7 +31,7 @@ public class QuizSetupClient {
     private Serialize serializers;
 
     public QuizSetupClient() throws NotBoundException, MalformedURLException, RemoteException {
-        serverQuiz = new QuizServiceImpl();
+        serverQuiz = new QuizServer();
 //        clientQuiz = new QuizServer();
         Remote service = this.service = Naming.lookup("//127.0.0.1:1099/quiz");
 //        if (System.getSecurityManager() == null) {
@@ -187,6 +188,11 @@ public class QuizSetupClient {
                 }
                 break;
             case 4://QUOTE QUIZ ID AND CLOSE. FULL PLAYER DETAILS SAVED ON SERVER.
+                System.out.println("ENTER QUIZ ID TO REVEAL WINNER, SAVE AND CLOSE:");
+                GetInput in = new GetInput();
+                int quizID = in.getIntInput();
+                
+                //NEED TO CLOSE THIS QUIZ GET IT FROM THE QUIZZES.
                 closeDown();
                 break;
             case 5: //exit given the Quiz ID
@@ -195,6 +201,7 @@ public class QuizSetupClient {
                 System.out.println("SAVED. THANKS FOR PLAYING THE QUIZ GAME!");
                 //serverQuiz.writeQuizServer();
                 serverQuiz.serialize();
+                closeDown();
                 System.exit(0);
                 break;
             default:

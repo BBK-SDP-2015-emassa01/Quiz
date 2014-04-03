@@ -19,7 +19,7 @@ import java.util.Scanner;
  *
  * @author Esha
  */
-public class QuizPlayerClient implements Serializable {
+public class QuizPlayerClient implements QuizPlayerClientImpl, Serializable {
 
     QuizService serverQuiz;
     Remote service;
@@ -33,7 +33,7 @@ public class QuizPlayerClient implements Serializable {
     Player playerName;
 
     public QuizPlayerClient() throws NotBoundException, MalformedURLException, RemoteException {
-        serverQuiz = new QuizServiceImpl();
+        serverQuiz = new QuizServer();
 //        clientQuiz = new QuizServer();
         Remote service = this.service = Naming.lookup("//127.0.0.1:1099/quiz");
 //        if (System.getSecurityManager() == null) {
@@ -47,6 +47,7 @@ public class QuizPlayerClient implements Serializable {
         playerName.setPlayerName(player);
     }
 
+    @Override
     public void launch() throws RemoteException {
 
         try {
@@ -59,6 +60,7 @@ public class QuizPlayerClient implements Serializable {
         }
     }
 
+    @Override
     public synchronized void keepLooping() throws RemoteException {
         if (running) {
             int selectedQuizID = menu();
@@ -83,6 +85,7 @@ public class QuizPlayerClient implements Serializable {
         }
     }
 
+    @Override
     public void terminateQuiz() {
         running = false;
         //serialize?
@@ -99,10 +102,11 @@ public class QuizPlayerClient implements Serializable {
         }
     }
 
+    @Override
     public int menu() throws RemoteException {
 
         printOutQuizList();
-        System.out.println("ENTER QUIZ ID TO ACCESS: ('END' TO EXIT)");
+        System.out.println("\n\nENTER QUIZ ID TO ACCESS: ('END' TO EXIT)");
         
         Scanner in = new Scanner(System.in);
         String input = in.nextLine();
@@ -115,6 +119,7 @@ public class QuizPlayerClient implements Serializable {
         return quizID;
     }
 
+    @Override
     public int selectQuizToPlay() {
         //return quiz ID that the player wants to play
         System.out.println("ENTER ID OF QUIZ TO ACCESS.");
@@ -123,12 +128,14 @@ public class QuizPlayerClient implements Serializable {
         return result;
     }
 
+    @Override
     public void printOutQuizList() throws RemoteException {
         try {
             Object[] quizArray = serverQuiz.getCurrentQuizList();
             if (serverQuiz.getCurrentQuizList() == null){
                 System.out.println("NO SAVED QUIZZES.");
             }
+            System.out.println("\n\nQUIZZES:");
             for (Object a : quizArray) {
                 Quiz b = (Quiz) a;
                 System.out.println("ID: "+b.getQuizID()+"\t|| NAME: "+ b.getQuizName());
@@ -139,6 +146,7 @@ public class QuizPlayerClient implements Serializable {
         }
     }
 
+    @Override
     public int getHighestScoreForPlayer(int quizID) throws RemoteException {
         return serverQuiz.getHighestScoreForQuiz(quizID);
     }
@@ -148,6 +156,7 @@ public class QuizPlayerClient implements Serializable {
      * @param selectedQuizID
      * @throws RemoteException
      */
+    @Override
     public void playSelectedQuiz(int selectedQuizID) throws RemoteException {
 
         Map<Integer, ArrayList<String>> quizMap = serverQuiz.getQuizMap();
@@ -160,34 +169,22 @@ public class QuizPlayerClient implements Serializable {
             Map<String, String[]> thisSet = serverQuiz.getQuestionsAndAnswers();
             highestScoreForQuiz = serverQuiz.getHighestScoreForQuiz(i);
 
-            try {
-                String[] QAs = thisSet.get(questions.get(i));
-
-                System.out.println("Question: " + QAs[0] + "\n");
-
-                System.out.println("Option 1: " + QAs[1]);
-
-                System.out.println("Option 2: " + QAs[2]);
-
-                System.out.println("Option 3: " + QAs[3]);
-
-                System.out.println("Option 4: " + QAs[4]);
-                String answer = input.getStringInput();
-
-                if (answer.equals(QAs[5])) {
-                    tempScore++;
-                    System.out.println("CORRECT! 1 POINT AWARDED!\n");
-                } else { 
-                    System.out.println("WRONG!\n");
-                }
+            String[] QAs = thisSet.get(questions.get(i));
+            System.out.println("Question: " + QAs[0] + "\n");
+            System.out.println("Option 1: " + QAs[1]);
+            System.out.println("Option 2: " + QAs[2]);
+            System.out.println("Option 3: " + QAs[3]);
+            System.out.println("Option 4: " + QAs[4]);
+            String answer = input.getStringInput();
+            if (answer.equals(QAs[5])) {
+                tempScore++;
+                System.out.println("CORRECT! 1 POINT AWARDED!\n");
+            } else {
+                System.out.println("WRONG!\n");
+            }
+            if (serverQuiz.getHighestScoreForQuiz(selectedQuizID)< tempScore){
+                serverQuiz.setHighestScoreForQuiz(selectedQuizID, tempScore);
                 
-                if (serverQuiz.getHighestScoreForQuiz(selectedQuizID)< tempScore){
-                    serverQuiz.setHighestScoreForQuiz(selectedQuizID, tempScore);
-                    
-                }
-                } catch (RemoteException e) {
-                System.out.println("Questions for this Quiz were not found.");
-                e.printStackTrace();
             }
             
         }

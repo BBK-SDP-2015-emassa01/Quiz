@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package QuizProject;
 
 import java.rmi.Remote;
@@ -17,47 +18,69 @@ import java.util.Set;
  */
 public interface QuizService extends Remote {
 
-    public Object[] getCurrentQuizList() throws RemoteException;
+    void addAnswersToQuestions(int ID) throws RemoteException;
 
-    public Object[] getListOfQuestionsInQuiz(int id) throws RemoteException;
+    int addQuiz(String s) throws RemoteException;
 
-    public int addQuiz(String s) throws RemoteException;
+    String checkIfQuizIDExists(int ID) throws RemoteException;
 
-    public void serverAddsSetOfQuestions(int id, ArrayList<String> questionSet) throws RemoteException;
+    /**
+     *
+     * @throws RemoteException
+     */
+    QuizService deserialize() throws RemoteException;
 
-    public String checkIfQuizIDExists(int ID) throws RemoteException;
+    Object[] getCurrentQuizList() throws RemoteException;
 
-    public void serverAddsAnswers(String question, String[] answers) throws RemoteException;
+    int getHighestScoreForQuiz(int QuizID) throws RemoteException;
 
-    public Set<Quiz> getQuizzes() throws RemoteException;
+    Map<Integer, Player> getHighestScorePlayerIDMap() throws RemoteException;
 
-    public Map<Integer, ArrayList<String>> getQuizMap() throws RemoteException;
+    Object[] getListOfQuestionsInQuiz(int id) throws RemoteException;
 
-    public Map<String, String[]> getQuestionsAndAnswers() throws RemoteException;
+    Map<String, String[]> getQuestionsAndAnswers() throws RemoteException;
 
-    public void serverAddstoQuizMap(String question, String[] answers) throws RemoteException;
-            
-    public int getHighestScoreForQuiz(int quizID) throws RemoteException;
+    Map<Integer, ArrayList<String>> getQuizMap() throws RemoteException;
+
+    Set<Quiz> getQuizzes() throws RemoteException;
+
+    int getRandomID() throws RemoteException;
+
+    /**
+     *
+     * @param quizID
+     * @throws RemoteException
+     */
+    void getWinnerForQuiz(int quizID) throws RemoteException;
+
+    void printQuestions(int id) throws RemoteException;
+
+    //    public QuizServer(QuizService quizServer, Serialize serialize) throws RemoteException {
+    //        this.serializer = serialize;
+    //        this.serializer.setFileName(FILE_NAME);
+    //        if (serialize.quizDataExists()){
+    //            Object qData = serialize.deserialize();
+    //            quizData = (QuizServer) qData;
+    //        } else {
+    //            quizData = quizServer;
+    //        }
+    //    }
+    /**
+     *
+     * @throws RemoteException
+     */
+    void serialize() throws RemoteException;
+
+    void serverAddsAnswers(String question, String[] answers) throws RemoteException;
+
+    void serverAddsSetOfQuestions(int ID, ArrayList<String> newListOfQuestions) throws RemoteException;
+
+    void serverAddstoQuizMap(String question, String[] answers) throws RemoteException;
+
+    void setHighestScoreForQuiz(int QuizID, int score) throws RemoteException;
+
+    void setHighestScorePlayerIDMap(int id, Player player) throws RemoteException;
+
+    void writeQuizServer() throws RemoteException;
     
-    public Map<Integer, Player> getHighestScorePlayerIDMap() throws RemoteException;
-    
-    public int getRandomID() throws RemoteException;
-            
-    public void setHighestScoreForQuiz(int quizID, int score) throws RemoteException;
-    
-    public void writeQuizServer()throws RemoteException;
-    
-    public void addAnswersToQuestions(int ID) throws RemoteException;
-            
-    public void printQuestions(int id) throws RemoteException;
-        
-    public void serialize()throws RemoteException;
-    
-    public QuizService deserialize() throws RemoteException;
-    
-    public void setHighestScorePlayerIDMap(int id, Player player) throws RemoteException ;
-    
-    public void getWinnerForQuiz(int quizID) throws RemoteException;
-    
-
 }
